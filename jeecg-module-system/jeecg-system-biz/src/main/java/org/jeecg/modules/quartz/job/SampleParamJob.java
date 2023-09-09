@@ -20,6 +20,8 @@ public class SampleParamJob implements Job {
 	 */
 	private String parameter;
 
+
+
 	public void setParameter(String parameter) {
 		this.parameter = parameter;
 	}

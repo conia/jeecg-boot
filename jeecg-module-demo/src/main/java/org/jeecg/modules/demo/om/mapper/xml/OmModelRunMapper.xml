@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.demo.om.mapper.OmModelRunMapper">
+
+<!--    <resultMap id="baseTrainMapper" type="OmModelTrain">-->
+<!--        <id column = "id" property="id"/>-->
+<!--        <result column = "username" property="usernmae"/>-->
+<!--    </resultMap>-->
+
+    <resultMap id="trainMapper" type="org.jeecg.modules.demo.om.entity.OmModelRun" >
+        <id column = "task_id" property="taskId"/>
+        <result column = "task_name" property="taskName"/>
+        <result column = "train_params" property="params"/>
+        <result column = "train_envs" property="envs"/>
+        <result column = "model_id" property="modelId"/>
+        <result column = "model_name" property="modelName"/>
+        <result column = "base_model_id" property="baseModelId"/>
+        <result column = "base_model_name" property="baseModelName"/>
+        <result column = "base_model_path" property="baseModelPath"/>
+
+        <collection property="trainData" javaType="java.util.List" ofType="org.jeecg.modules.demo.om.entity.OmModelRunData">
+            <result column="file_id" property="fileId"/>
+            <result column="file_name" property="fileName"/>
+            <result column="file_path" property="filePath"/>
+            <result column="dataset_id" property="datasetId"/>
+            <result column="dataset_fmt_id" property="datasetFmtId"/>
+            <result column="dataset_fmt" property="datasetFmt"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="evalMapper" type="org.jeecg.modules.demo.om.entity.OmModelRun" >
+        <id column = "task_id" property="taskId"/>
+        <result column = "task_name" property="taskName"/>
+        <result column = "params" property="params"/>
+        <result column = "envs" property="envs"/>
+        <result column = "port" property="port"/>
+        <result column = "model_id" property="modelId"/>
+        <result column = "model_name" property="modelName"/>
+        <result column = "model_path" property="modelPath"/>
+    </resultMap>
+    <!--查询-->
+    <select id="findTrainInfoByTaskId" parameterType="java.lang.String" resultMap="trainMapper" >
+
+
+        select m.*,n.item_text as dataset_fmt
+        from
+            (SELECT a.*,
+                    b.model_name as base_model_name,
+                    b.model_path as base_model_path,
+                    f.id as file_id,
+                    f.file_name as file_name,
+                    f.file_path as file_path,
+                    f.ds_id as dataset_id,
+                    s.ds_format as dataset_fmt_id
+
+             FROM
+                 (
+                     SELECT t.id AS task_id,
+                            t.name as task_name,
+                            t.params AS train_params,
+                            t.envs AS train_envs,
+                            m.id AS model_id,
+                            m.model_name AS model_name,
+                            m.base_mode_id as base_model_id
+
+                     FROM om_task t LEFT JOIN om_model m ON t.model_id = m.id
+                     WHERE t.id = #{taskId}
+                 ) a LEFT JOIN om_model b ON a.base_model_id = b.id
+                     left join om_model_data d on a.model_id = d.model_id
+                     left join om_file f on d.file_id = f.id
+                     left join om_dataset s on f.ds_id = s.id
+            ) m left join
+                (select i.item_text,i.item_value
+                 from sys_dict_item i
+                     left join sys_dict sd on i.dict_id = sd.id
+                 where sd.dict_code = 'dataset_format'
+                 ) n on m.dataset_fmt_id = n.item_value
+
+
+    </select>
+
+    <select id="findEvalInfoByTaskId" parameterType="java.lang.String" resultMap="evalMapper">
+        SELECT t.id AS task_id,
+               t.name as task_name,
+               t.params AS params,
+               t.envs AS envs,
+               t.port as port,
+               m.id AS model_id,
+               m.model_name AS model_name,
+               m.model_path as model_path,
+        FROM om_task t LEFT JOIN om_model m ON t.model_id = m.id
+        WHERE t.id = #{taskId}
+    </select>
+
+</mapper>

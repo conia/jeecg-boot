@@ -133,7 +133,7 @@ spring:
         master:
           url: jdbc:mysql://127.0.0.1:3306/jeecg-boot?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
           username: root
-          password: root
+          password: "!!abc123"
           driver-class-name: com.mysql.cj.jdbc.Driver
           # 多数据源配置
           #multi-datasource1:
@@ -201,10 +201,10 @@ jeecg:
   file-view-domain: http://fileview.jeecg.com
   # minio文件上传
   minio:
-    minio_url: http://minio.jeecg.com
-    minio_name: ??
-    minio_pass: ??
-    bucketName: otatest
+    minio_url: http://127.0.0.1:9000
+    minio_name: test
+    minio_pass: testtest123
+    bucketName: data
   #大屏报表参数设置
   jmreport:
     mode: dev
@@ -292,3 +292,12 @@ third-app:
       # appSecret
       client-secret: ??
       agent-id: ??
+
+om:
+  model:
+    task:
+      concurrent: 1
+      agent:
+        dir: /d1/jxhe/om/om-agent
+        url: http://localhost:9123
+

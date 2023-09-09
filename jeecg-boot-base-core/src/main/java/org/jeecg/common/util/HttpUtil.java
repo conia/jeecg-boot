@@ -13,12 +13,12 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * 调用 Restful 接口 Util
+ * http 接口 Util
  *
- * @author sunjianlei
+ * @author jxhe
  */
 @Slf4j
-public class RestUtil {
+public class HttpUtil {
 
     private static String domain = null;
     private static String path = null;
@@ -57,8 +57,8 @@ public class RestUtil {
 
     static {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setConnectTimeout(30000);
-        requestFactory.setReadTimeout(30000);
+        requestFactory.setConnectTimeout(3000);
+        requestFactory.setReadTimeout(3000);
         RT = new RestTemplate(requestFactory);
         // 解决乱码问题
         RT.getMessageConverters().set(1, new StringHttpMessageConverter(StandardCharsets.UTF_8));
