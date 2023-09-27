@@ -12,6 +12,9 @@ public class OmModelRun {
     private String baseModelId;
     private String baseModelName;
     private String baseModelPath;
+
+
+    private String baseModelDirName;
     private String params;
     private String envs;
 
@@ -105,5 +108,14 @@ public class OmModelRun {
 
     public void setPort(Integer port) {
         this.port = port;
+    }
+
+
+    public String getBaseModelDirName() {
+        return baseModelDirName;
+    }
+
+    public void setBaseModelDirName(String baseModelDirName) {
+        this.baseModelDirName = baseModelDirName;
     }
 }

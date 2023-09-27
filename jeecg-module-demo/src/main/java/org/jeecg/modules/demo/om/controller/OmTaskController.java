@@ -1,6 +1,7 @@
 package org.jeecg.modules.demo.om.controller;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,7 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.demo.om.entity.OmModel;
 import org.jeecg.modules.demo.om.entity.OmTask;
+import org.jeecg.modules.demo.om.service.IOmModelService;
 import org.jeecg.modules.demo.om.service.IOmTaskService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -20,6 +23,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
+import org.jeecg.modules.demo.om.util.ModelUtil;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -50,6 +54,9 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 public class OmTaskController extends JeecgController<OmTask, IOmTaskService> {
 	@Autowired
 	private IOmTaskService omTaskService;
+
+	 @Autowired
+	 private IOmModelService omModelService;
 	
 	/**
 	 * 分页列表查询
@@ -85,6 +92,16 @@ public class OmTaskController extends JeecgController<OmTask, IOmTaskService> {
 	@PostMapping(value = "/add")
 	public Result<String> add(@RequestBody OmTask omTask) {
 		omTaskService.save(omTask);
+		OmModel model = new OmModel();
+		model.setId(omTask.getModelId());
+		if(ModelUtil.isTrainTask(omTask.getTaskType())){
+			model.setTrainTaskId(omTask.getId());
+		}else if(ModelUtil.isEvalTask(omTask.getTaskType())){
+			model.setEvalTaskId(omTask.getId());
+		}else if(ModelUtil.isDeployTask(omTask.getTaskType())){
+			model.setDeployTaskId(omTask.getId());
+		}
+		omModelService.updateById(model);
 		return Result.OK("添加成功！");
 	}
 	
@@ -181,12 +198,13 @@ public class OmTaskController extends JeecgController<OmTask, IOmTaskService> {
 	  * @param omTask
 	  * @return
 	  */
-	 @AutoLog(value = "模型训练记录-编辑")
-	 @ApiOperation(value="模型训练记录-编辑", notes="模型训练记录-编辑")
+	 @AutoLog(value = "模型任务记录-编辑")
+	 @ApiOperation(value="模型任务记录-编辑", notes="模型任务记录-编辑")
 	 @RequestMapping(value = "/editStatus", method = {RequestMethod.PUT,RequestMethod.POST})
 	 public Result<String> editStatus(@RequestBody OmTask omTask) {
+		 omTask.setEndTime(new Date());
 		 omTaskService.updateById(omTask);
-		 return Result.OK("模型训练记录-编辑状态成功!");
+		 return Result.OK("模型任务记录-编辑状态成功!: "+omTask.getStatus());
 	 }
 
 }

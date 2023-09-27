@@ -64,4 +64,16 @@ public class ModelUtil {
         ModelUtil.agentDir = agentDir;
     }
 
+    public static boolean isTrainTask(String taskType){
+        return "1".equals(taskType);
+    }
+
+    public static boolean isEvalTask(String taskType){
+        return "2".equals(taskType);
+    }
+
+    public static boolean isDeployTask(String taskType){
+        return "3".equals(taskType);
+    }
+
 }

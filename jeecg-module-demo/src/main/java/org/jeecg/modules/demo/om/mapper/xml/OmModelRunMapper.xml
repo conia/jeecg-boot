@@ -17,6 +17,8 @@
         <result column = "base_model_id" property="baseModelId"/>
         <result column = "base_model_name" property="baseModelName"/>
         <result column = "base_model_path" property="baseModelPath"/>
+        <result column = "base_model_dir_name" property="baseModelDirName"/>
+
 
         <collection property="trainData" javaType="java.util.List" ofType="org.jeecg.modules.demo.om.entity.OmModelRunData">
             <result column="file_id" property="fileId"/>
@@ -36,15 +38,19 @@
         <result column = "port" property="port"/>
         <result column = "model_id" property="modelId"/>
         <result column = "model_name" property="modelName"/>
-        <result column = "model_path" property="modelPath"/>
+        <result column = "base_model_path" property="baseModelPath"/>
+        <result column = "base_model_dir_name" property="baseModelDirName"/>
     </resultMap>
     <!--查询-->
     <select id="findTrainInfoByTaskId" parameterType="java.lang.String" resultMap="trainMapper" >
 
 
+
+
         select m.*,n.item_text as dataset_fmt
         from
             (SELECT a.*,
+                    tt.dir_name as base_model_dir_name,
                     b.model_name as base_model_name,
                     b.model_path as base_model_path,
                     f.id as file_id,
@@ -63,18 +69,25 @@
                             m.model_name AS model_name,
                             m.base_mode_id as base_model_id
 
-                     FROM om_task t LEFT JOIN om_model m ON t.model_id = m.id
+
+                     FROM om_task t
+                              LEFT JOIN om_model m ON t.model_id = m.id
+
                      WHERE t.id = #{taskId}
                  ) a LEFT JOIN om_model b ON a.base_model_id = b.id
+                     LEFT JOIN om_task tt on tt.id = b.train_task_id
                      left join om_model_data d on a.model_id = d.model_id
                      left join om_file f on d.file_id = f.id
                      left join om_dataset s on f.ds_id = s.id
             ) m left join
-                (select i.item_text,i.item_value
-                 from sys_dict_item i
-                     left join sys_dict sd on i.dict_id = sd.id
-                 where sd.dict_code = 'dataset_format'
-                 ) n on m.dataset_fmt_id = n.item_value
+            (select i.item_text,i.item_value
+             from sys_dict_item i
+                      left join sys_dict sd on i.dict_id = sd.id
+             where sd.dict_code = 'dataset_format'
+            ) n on m.dataset_fmt_id = n.item_value
+
+
+
 
 
     </select>
@@ -87,8 +100,10 @@
                t.port as port,
                m.id AS model_id,
                m.model_name AS model_name,
-               m.model_path as model_path,
+               m.model_path as base_model_path,
+               tt.dir_name as base_model_dir_name
         FROM om_task t LEFT JOIN om_model m ON t.model_id = m.id
+                       LEFT JOIN om_task tt on tt.id = m.train_task_id
         WHERE t.id = #{taskId}
     </select>
 

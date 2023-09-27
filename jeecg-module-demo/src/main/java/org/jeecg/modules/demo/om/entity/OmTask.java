@@ -4,12 +4,11 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.math.BigDecimal;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.TableLogic;
+
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.data.annotation.Transient;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecg.common.aspect.annotation.Dict;
@@ -118,17 +117,19 @@ public class OmTask implements Serializable {
     @ApiModelProperty(value = "部署端口")
     private java.lang.Integer port;
 
-
-    public boolean isTrain() {
-      return "1".equals(taskType);
-    }
-
-    public boolean isEval() {
-        return "2".equals(taskType);
-    }
-
-    public boolean isDeploy() {
-        return "3".equals(taskType);
-    }
+//    @Transient
+//    public boolean isTrain() {
+//      return "1".equals(taskType);
+//    }
+//
+//    @Transient
+//    public boolean isEval() {
+//        return "2".equals(taskType);
+//    }
+//
+//    @TableField(exist = false)
+//    public boolean isDeploy() {
+//        return "3".equals(taskType);
+//    }
 
 }

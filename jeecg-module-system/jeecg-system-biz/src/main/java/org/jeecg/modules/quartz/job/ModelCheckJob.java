@@ -96,27 +96,41 @@ public class ModelCheckJob implements Job {
 			} else {
 				for (OmTask task : tasks) {
 					String dirName = task.getDirName();
-					if (task.isTrain()) {
-						if (StringUtils.isNotBlank(dirName) && StringUtils.isBlank(task.getWandb())) {
-							String urlChecker = ModelUtil.getTrainTaskCheckerUrl();
-							OmTaskCheckInfo checkInfo = OmTaskCheckInfo.builder()
-									.dirName(dirName)
-									.taskType(task.getTaskType())
-									.build();
-							JSONObject obj = RestUtil.post(urlChecker, (JSONObject) JSON.toJSON(checkInfo));
-							int code = (int) obj.get("code");
-							if (code == 0) {
-								log.info("The return data is {}", obj.toJSONString());
-								LinkedHashMap<String, Object> result = (LinkedHashMap) obj.get("result");
-								String wandbUrl = (String) result.get("wandb_url");
-								task.setWandb(wandbUrl);
-								omTaskService.updateById(task);
-								log.info("success to update train task checker info");
-							} else {
-								// error
-								String msg = (String) obj.get("message");
-								log.error("error when check the train task info: {}, with msg: {}", task.getId(), msg);
-							}
+					if (StringUtils.isNotBlank(dirName)) {
+						boolean isTrain = ModelUtil.isTrainTask(task.getTaskType());
+						boolean isEval = ModelUtil.isEvalTask(task.getTaskType());
+						boolean isDeploy = ModelUtil.isDeployTask(task.getTaskType());
+						if( ( isTrain && StringUtils.isBlank(task.getWandb()) )
+								||isEval) {
+
+								String urlChecker = ModelUtil.getTrainTaskCheckerUrl();
+								OmTaskCheckInfo checkInfo = OmTaskCheckInfo.builder()
+										.dirName(dirName)
+										.taskType(task.getTaskType())
+										.build();
+								JSONObject obj = RestUtil.post(urlChecker, (JSONObject) JSON.toJSON(checkInfo));
+								int code = (int) obj.get("code");
+								if (code == 0) {
+									log.info("The return data is {}", obj.toJSONString());
+									LinkedHashMap<String, Object> result = (LinkedHashMap) obj.get("result");
+									if(isTrain &&  result.containsKey("wandb_url")) {
+										String wandbUrl = (String) result.get("wandb_url");
+										task.setWandb(wandbUrl);
+										omTaskService.updateById(task);
+										log.info("success to update train task checker info");
+									}else if((isEval || isDeploy) && result.containsKey("status")){
+										String status = (String) result.get("status");
+										task.setStatus(status);
+										omTaskService.updateById(task);
+										log.info("success to update train task checker info");
+									}
+
+								} else {
+									// error
+									String msg = (String) obj.get("message");
+									log.error("error when check the train task info: {}, with msg: {}", task.getId(), msg);
+								}
+
 						}
 					}
 				}

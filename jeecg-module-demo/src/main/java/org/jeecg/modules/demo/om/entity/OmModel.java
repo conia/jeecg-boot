@@ -77,9 +77,9 @@ public class OmModel implements Serializable {
 	@Excel(name = "模型大小", width = 15)
     @ApiModelProperty(value = "模型大小")
     private java.lang.String totalSize;
-	/**父模型*/
-	@Excel(name = "父模型", width = 15, dictTable = "om_model where model_train_status = 3 ", dicText = "model_name", dicCode = "id")
-    @Dict(dictTable = "om_model where model_train_status = 3 ", dicText = "model_name", dicCode = "id")
+    /**父模型*/
+    @Excel(name = "父模型", width = 15, dictTable = "om_model m left join om_task t on m.train_task_id = t.id  where t.status = 5 or m.model_src = 1", dicText = "model_name", dicCode = "m.id")
+    @Dict(dictTable = "om_model m left join om_task t on m.train_task_id = t.id  where t.status = 5 or m.model_src = 1", dicText = "model_name", dicCode = "m.id")
     @ApiModelProperty(value = "父模型")
     private java.lang.String baseModeId;
 	/**训练状态*/
@@ -92,4 +92,19 @@ public class OmModel implements Serializable {
     @Dict(dicCode = "model_deploy_status")
     @ApiModelProperty(value = "发布状态")
     private java.lang.String modelStatus;
+    /**训练任务ID*/
+    @Excel(name = "训练任务ID", width = 15)
+    @Dict(dictTable = "om_task", dicText = "status", dicCode = "id")
+    @ApiModelProperty(value = "训练任务ID")
+    private java.lang.String trainTaskId;
+    /**评估任务ID*/
+    @Excel(name = "评估任务ID", width = 15)
+    @Dict(dictTable = "om_task", dicText = "status", dicCode = "id")
+    @ApiModelProperty(value = "评估任务ID")
+    private java.lang.String evalTaskId;
+    /**发布任务ID*/
+    @Excel(name = "发布任务ID", width = 15)
+    @Dict(dictTable = "om_task", dicText = "status", dicCode = "id")
+    @ApiModelProperty(value = "发布任务ID")
+    private java.lang.String deployTaskId;
 }

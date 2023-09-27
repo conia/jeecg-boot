@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 /**
  * 示例带参定时任务
@@ -102,9 +101,9 @@ public class ModelRunJob implements Job {
 			}else{
 				String taskType = task.getTaskType();
 				String taskTypeName = getTaskTypeName(taskType);
-				boolean isTrain = "1".equals(taskType);
-				boolean isEval = "2".equals(taskType);
-				boolean isDeploy = "3".equals(taskType);
+				boolean isTrain = ModelUtil.isTrainTask(taskType);
+				boolean isEval = ModelUtil.isEvalTask(taskType);
+				boolean isDeploy = ModelUtil.isDeployTask(taskType);
 				log.info("Find a [{}] task with id {} to be started", taskTypeName, task.getId());
 				QueryWrapper<OmTask> qwGetRunningTask = new QueryWrapper<>();
 				qwGetRunningTask.between("status","2","4");
@@ -137,8 +136,6 @@ public class ModelRunJob implements Job {
 					if(isEval || isDeploy) {
 						runInfo = iOmModelRunService.getModelEvalInfo(task.getId());
 					}
-
-
 					if(runInfo == null){
 						throw new Exception(String.format("获取模型[%s]任务[%s]详细信息时出现错误：返回为空",taskTypeName,task.getId()));
 					}
@@ -180,6 +177,7 @@ public class ModelRunJob implements Job {
 					// change the task to fail
 					task.setStatus("6");
 					task.setMessage(ex.getMessage());
+					task.setEndTime(new Date());
 					omTaskService.updateById(task);
 				}catch(Exception exx){
 					log.error("error when updating task to failed",ex);

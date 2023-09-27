@@ -12,18 +12,18 @@ import java.util.List;
 public class OmModelRunServiceImpl implements IOmModelRunService {
 
     @Autowired
-    OmModelRunMapper modelTrainMapper;
+    OmModelRunMapper modelRunMapper;
 
     @Override
     public OmModelRun getModelTrainInfo(String taskId) {
-        List<OmModelRun> list = modelTrainMapper.findTrainInfoByTaskId(taskId);
+        List<OmModelRun> list = modelRunMapper.findTrainInfoByTaskId(taskId);
         if(list.size()>0)
             return list.get(0);
         return null;
     }
     @Override
     public OmModelRun getModelEvalInfo(String taskId) {
-        OmModelRun info = modelTrainMapper.findEvalInfoByTaskId(taskId);
+        OmModelRun info = modelRunMapper.findEvalInfoByTaskId(taskId);
         return info;
     }
 }
