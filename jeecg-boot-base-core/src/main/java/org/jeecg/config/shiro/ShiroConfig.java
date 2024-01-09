@@ -94,7 +94,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/sys/common/pdf/**", "anon");//pdf预览
         filterChainDefinitionMap.put("/generic/**", "anon");//pdf预览需要文件
 
-        filterChainDefinitionMap.put("/om/omTask/editStatus", "anon");//pdf预览需要文件
+
 
 
 

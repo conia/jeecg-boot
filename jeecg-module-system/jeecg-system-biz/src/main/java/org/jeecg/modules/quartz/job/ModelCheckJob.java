@@ -101,7 +101,7 @@ public class ModelCheckJob implements Job {
 						boolean isEval = ModelUtil.isEvalTask(task.getTaskType());
 						boolean isDeploy = ModelUtil.isDeployTask(task.getTaskType());
 						if( ( isTrain && StringUtils.isBlank(task.getWandb()) )
-								||isEval) {
+								||isEval || isDeploy) {
 
 								String urlChecker = ModelUtil.getTrainTaskCheckerUrl();
 								OmTaskCheckInfo checkInfo = OmTaskCheckInfo.builder()

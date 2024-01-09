@@ -22,6 +22,16 @@ public interface IOmModelService extends IService<OmModel> {
 	 * @param omModelDataList
 	 */
 	public void saveMain(OmModel omModel,List<OmModelData> omModelDataList) ;
+
+
+	/**
+	 * 添加一对多 (new)
+	 *
+	 * @param omModel
+	 * @param omModelDataList
+	 */
+	public void saveMainNew(OmModel omModel,List<OmModelData> omModelDataList) ;
+
 	
 	/**
 	 * 修改一对多
@@ -44,5 +54,7 @@ public interface IOmModelService extends IService<OmModel> {
 	 * @param idList
 	 */
 	public void delBatchMain (Collection<? extends Serializable> idList);
+
+
 	
 }

@@ -42,6 +42,33 @@ public class OmModelServiceImpl extends ServiceImpl<OmModelMapper, OmModel> impl
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
+	public void saveMainNew(OmModel omModel, List<OmModelData> omModelDataList) {
+
+
+		if(omModel.getModelSrc() == null ||  "1".equals(omModel.getModelSrc())) {
+			// default local
+			omModel.setModelSrc("1");
+			omModel.setModelTrainStatus("3");
+			omModel.setModelStatus("1");
+		}else{
+			// default new
+			omModel.setModelSrc("2");
+			omModel.setModelTrainStatus("1");
+			omModel.setModelStatus("1");
+		}
+
+		omModelMapper.insert(omModel);
+		if(omModelDataList!=null && omModelDataList.size()>0) {
+			for(OmModelData entity:omModelDataList) {
+				//外键设置
+				entity.setModelId(omModel.getId());
+				omModelDataMapper.insert(entity);
+			}
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public void updateMain(OmModel omModel,List<OmModelData> omModelDataList) {
 		omModelMapper.updateById(omModel);
 		

@@ -113,13 +113,13 @@ public class OmModelController {
 		 OmModel omModel = new OmModel();
 		 BeanUtils.copyProperties(omModelPage, omModel);
 		 // default
-		 if(omModel.getModelSrc() == null ||  "1".equals(omModel.getModelSrc())) {
-			 omModel.setModelSrc("1");
-			 omModel.setModelTrainStatus("3");
-			 omModel.setModelStatus("1");
-		 }
+//		 if(omModel.getModelSrc() == null ||  "1".equals(omModel.getModelSrc())) {
+//			 omModel.setModelSrc("1");
+//			 omModel.setModelTrainStatus("3");
+//			 omModel.setModelStatus("1");
+//		 }
 
-		 omModelService.saveMain(omModel, omModelPage.getOmModelDataList());
+		 omModelService.saveMainNew(omModel, omModelPage.getOmModelDataList());
 		 return Result.OK("添加成功！");
 	 }
 
@@ -137,11 +137,11 @@ public class OmModelController {
 		 OmModel omModel = new OmModel();
 		 BeanUtils.copyProperties(omModelPage, omModel);
 		 // default
-		 omModel.setModelSrc("2");
-		 omModel.setModelTrainStatus("1");
-		 omModel.setModelStatus("1");
+//		 omModel.setModelSrc("2");
+//		 omModel.setModelTrainStatus("1");
+//		 omModel.setModelStatus("1");
 
-		 omModelService.saveMain(omModel, omModelPage.getOmModelDataList());
+		 omModelService.saveMainNew(omModel, omModelPage.getOmModelDataList());
 		 return Result.OK("添加成功！");
 	 }
 
